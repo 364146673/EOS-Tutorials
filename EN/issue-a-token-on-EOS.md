@@ -1,6 +1,6 @@
 # Issue your own tokens on EOS
 
-This article mainly introduces how to issue your own tokens on EOS. The following experiments are based on the version of EOSO/EOS:20180521.
+This article mainly introduces how to issue your own tokens on EOS. The following experiments are based on the version of `EOSO/EOS:20180521`.
 
 ## Create KEY
 
@@ -166,3 +166,4 @@ cleos get currency balance eosio.token xiaoming
 ```
 
 You can see that the transfer was successful. `noprom` and `xiaoming` have 5 `EOSDEVS` tokens.
+
