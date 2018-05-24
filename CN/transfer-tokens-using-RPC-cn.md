@@ -162,11 +162,11 @@ GET http://127.0.0.1:8888/v1/chain/get_info
 ```
 {
     "server_version": "4e99cf47",
-    "head_block_num": 167172,
-    "last_irreversible_block_num": 167171,
-    "last_irreversible_block_id": "00028d0306c1be5743f920a5423b6101497c1b1cb7a92ee478bbe1cbaff1f487",
-    "head_block_id": "00028d04b87fe52bee1171bddd2af9fc6f8e2f5cd3019eed27a8aba55ff610ea",
-    "head_block_time": "2018-05-24T03:41:03",
+    "head_block_num": 246190,
+    "last_irreversible_block_num": 246189,
+    "last_irreversible_block_id": "0003c1ade32d4660e7872abaedb9413d7de2eefea63dd17eea6bd36dc3c11ac4",
+    "head_block_id": "0003c1ae3018e5cb2bda7c6897b418e60eaf8d1a00622d731d7337c264dca453",
+    "head_block_time": "2018-05-24T14:39:32",
     "head_block_producer": "eosio",
     "virtual_block_cpu_limit": 100000000,
     "virtual_block_net_limit": 1048576000,
@@ -186,7 +186,7 @@ POST http://127.0.0.1:8888/v1/chain/get_block
 DATA:
 
 ```
-{"block_num_or_id":167172}
+{"block_num_or_id":246190}
 ```
 
 请求参数:
@@ -199,21 +199,21 @@ DATA:
 
 ```
 {
-    "timestamp": "2018-05-24T03:41:03.000",
+    "timestamp": "2018-05-24T14:39:32.000",
     "producer": "eosio",
     "confirmed": 0,
-    "previous": "00028d0306c1be5743f920a5423b6101497c1b1cb7a92ee478bbe1cbaff1f487",
+    "previous": "0003c1ade32d4660e7872abaedb9413d7de2eefea63dd17eea6bd36dc3c11ac4",
     "transaction_mroot": "0000000000000000000000000000000000000000000000000000000000000000",
-    "action_mroot": "55fc5e788439f33c27f3e890f1f171307c93650d51a3709a1225ea136c87fdd5",
+    "action_mroot": "953a01dbf975cc120285e0c4e9fbe4be181189a821de7f2da467bcb373dce8f2",
     "schedule_version": 0,
     "new_producers": null,
     "header_extensions": [],
-    "producer_signature": "SIG_K1_KBUdejuynu9VWiJBHjocrAz3PthzyVxwYxFkkCEuit7J37iEpHK8i3hXj9jUGsmHY77C452qpQp7mdvaAivMc1CYVH4zBD",
+    "producer_signature": "SIG_K1_JvQ5qzgSJ4L1jYYZH2L7oM7D7hp37ejENN8UQL9AvnKpNvbCeF8gAzAKXUYvocH9fEUg2bxKGbU66QGRCjVGzxEXN7HTL6",
     "transactions": [],
     "block_extensions": [],
-    "id": "00028d04b87fe52bee1171bddd2af9fc6f8e2f5cd3019eed27a8aba55ff610ea",
-    "block_num": 167172,
-    "ref_block_prefix": 3178303982
+    "id": "0003c1ae3018e5cb2bda7c6897b418e60eaf8d1a00622d731d7337c264dca453",
+    "block_num": 246190,
+    "ref_block_prefix": 1753012779
 }
 ```
 
@@ -245,7 +245,66 @@ Data:
 {}
 ```
 
-### **sign_transaction**
+### get_required_keys
+
+我们需要用这个接口来获取所需要的key
+
+```
+POST http://127.0.0.1:8888/v1/chain/get_required_keys
+```
+
+DATA:
+
+```
+{
+    "available_keys": [
+        "EOS5ySgzeHp9G7TqNDGpyzaCtahAeRcTvPRPJbFey5CmySL3vKYgE",
+        "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+        "EOS6gXwNz2SKUNAZcyjzVvg6KdNgA1bSuVzCr8c5yWkGij52JKx8V"
+    ],
+    "transaction": {
+        "actions": [
+            {
+                "account": "eosio.token",
+                "authorization": [
+                    {
+                        "actor": "eosio",
+                        "permission": "active"
+                    }
+                ],
+                "data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d",
+                "name": "transfer"
+            }
+        ],
+        "context_free_actions": [
+        ],
+        "context_free_data": [
+        ],
+        "delay_sec": 0,
+        "expiration": "2018-05-24T15:20:30.500",
+        "max_kcpu_usage": 0,
+        "max_net_usage_words": 0,
+        "ref_block_num": 245107,
+        "ref_block_prefix": 801303063,
+        "signatures": [
+        ]
+    }
+}
+```
+
+得到结果:
+
+```
+{
+    "required_keys": [
+        "EOS6gXwNz2SKUNAZcyjzVvg6KdNgA1bSuVzCr8c5yWkGij52JKx8V"
+    ]
+}
+```
+
+结果中的key将作为**sign_transaction**的key
+
+### sign_transaction
 
 接着我们需要对转账交易进行签名：
 
@@ -258,12 +317,12 @@ Data:
 ```
 [
   {
-    "ref_block_num": 168302,
-    "ref_block_prefix": 627421541,
-    "expiration": "2018-05-24T05:50:28.000",
+    "ref_block_num": 246190,
+    "ref_block_prefix": 1753012779,
+    "expiration": "2018-05-24T15:30:32.000",
     "actions": [
       {
-        "account": "eosio.token",  //有 transfer 的 action 的智能合约账号
+        "account": "eosio.token",
         "name": "transfer",
         "authorization": [
           {
@@ -271,25 +330,39 @@ Data:
             "permission": "active"
           }
         ],
-        "data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d" // //abi_json_to_bin 的响应参数 binargs
+        "data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
       }
     ],
     "signatures": []
   },
   [
-    "EOS5ySgzeHp9G7TqNDGpyzaCtahAeRcTvPRPJbFey5CmySL3vKYgE" //创建者的公钥（交易发起者的公钥），其实是用的公钥对应的私钥进行签名的，签名前需要先解锁包含此私钥的钱包
+    "EOS6gXwNz2SKUNAZcyjzVvg6KdNgA1bSuVzCr8c5yWkGij52JKx8V"
   ],
   ""
 ]
 ```
 
+参数含义:
+
+|            参数名称            |  参数类型  |                 描述                  |
+| :------------------------: | :----: | :---------------------------------: |
+|       ref_block_num        | number |        **get_block**获得的最新区块号        |
+|      ref_block_prefix      | number |      **get_block**获得的最新区块号相关信息      |
+|         expiration         | string |   过期时间 = timestamp 加上 一段时间 ，例如1分钟   |
+|          account           | string |   调用系统智能合约账号名，这里为**eosio.token**    |
+|            name            | string |  **eosio.token**合约的**transfer**方法   |
+|    authorization. actor    | string |              执行操作的用户名               |
+| authorization.  permission | string |               执行操作的权限               |
+|            data            | string | **abi_json_to_bin** 序列化后的 值 binargs |
+|                            | string |               创建者的公钥                |
+
 得到结果:
 
 ```
 {
-    "expiration": "2018-05-24T05:50:28",
-    "ref_block_num": 37230,
-    "ref_block_prefix": 627421541,
+    "expiration": "2018-05-24T15:30:32",
+    "ref_block_num": 49582,
+    "ref_block_prefix": 1753012779,
     "max_net_usage_words": 0,
     "max_cpu_usage_ms": 0,
     "delay_sec": 0,
@@ -309,9 +382,202 @@ Data:
     ],
     "transaction_extensions": [],
     "signatures": [
-        "SIG_K1_KiqCGCz3NWykgiLorC1g3CjRp1weBJf7Kp5AMypzdyBGUkg7TB9gpX7BCt3hdgGtqYMmtBPt1ZFtyQdTzUVL1EiqvWFNmH"
+        "SIG_K1_Khn918pY1NHmnbF41bsqFE7sPYrniZPtTns68qUo3m92jp6gbegkpRHYSp9RH95T3u82XUvjZLM33AP83ZqiGApBo7JnBF"
     ],
     "context_free_data": []
 }
 ```
 
+### push_transaction
+
+最后就是发送交易:
+
+```
+POST http://127.0.0.1:8888/v1/chain/push_transaction
+```
+
+Data:
+
+```
+{
+  "compression": "none",
+  "transaction": {
+    "expiration": "2018-05-24T15:30:32",
+    "ref_block_num": 49582,
+    "ref_block_prefix": 1753012779,
+    "context_free_actions": [],
+    "actions": [
+        {
+            "account": "eosio.token",
+            "name": "transfer",
+            "authorization": [
+                {
+                    "actor": "eosio",
+                    "permission": "active"
+                }
+            ],
+            "data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
+        }
+    ],
+    "transaction_extensions": []
+  },
+  "signatures": [
+        "SIG_K1_Khn918pY1NHmnbF41bsqFE7sPYrniZPtTns68qUo3m92jp6gbegkpRHYSp9RH95T3u82XUvjZLM33AP83ZqiGApBo7JnBF"
+   ]
+}
+```
+
+参数含义:
+
+|            参数名称            |  参数类型  |                描述                |
+| :------------------------: | :----: | :------------------------------: |
+|       ref_block_num        | number |      **get_block**获得的最新区块号       |
+|      ref_block_prefix      | number |    **get_block**获得的最新区块号相关信息     |
+|         expiration         | string | 过期时间 = timestamp 加上 一段时间 ，例如1分钟  |
+|          account           | string |  调用系统智能合约账号名，这里为**eosio.token**  |
+|            name            | string | **eosio.token**合约的**transfer**方法 |
+|    authorization. actor    | string |             执行操作的用户名             |
+| authorization.  permission | string |             执行操作的权限              |
+|         signatures         | string |    **sign_transaction** 得到的签名    |
+
+得到结果
+
+```
+{
+    "transaction_id": "015ba92c7ad7294f0d70c772e7ba6ed678b11734418bf9ec48b001ce65c48e2f",
+    "processed": {
+        "id": "015ba92c7ad7294f0d70c772e7ba6ed678b11734418bf9ec48b001ce65c48e2f",
+        "receipt": {
+            "status": "executed",
+            "cpu_usage_us": 644,
+            "net_usage_words": 18
+        },
+        "elapsed": 644,
+        "net_usage": 144,
+        "scheduled": false,
+        "action_traces": [
+            {
+                "receipt": {
+                    "receiver": "eosio.token",
+                    "act_digest": "77d11fbbb7e6a5d67c28c2578bc2042704ed76d494d7e426eaecb54dceb0dc0b",
+                    "global_sequence": 246506,
+                    "recv_sequence": 12,
+                    "auth_sequence": [
+                        [
+                            "eosio",
+                            246499
+                        ]
+                    ],
+                    "code_sequence": 1,
+                    "abi_sequence": 1
+                },
+                "act": {
+                    "account": "eosio.token",
+                    "name": "transfer",
+                    "authorization": [
+                        {
+                            "actor": "eosio",
+                            "permission": "active"
+                        }
+                    ],
+                    "data": {
+                        "from": "eosio",
+                        "to": "noprom",
+                        "quantity": "1.0000 EOS",
+                        "memo": "created by noprom"
+                    },
+                    "hex_data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
+                },
+                "elapsed": 446,
+                "cpu_usage": 0,
+                "console": "",
+                "total_cpu_usage": 0,
+                "trx_id": "015ba92c7ad7294f0d70c772e7ba6ed678b11734418bf9ec48b001ce65c48e2f",
+                "inline_traces": [
+                    {
+                        "receipt": {
+                            "receiver": "eosio",
+                            "act_digest": "77d11fbbb7e6a5d67c28c2578bc2042704ed76d494d7e426eaecb54dceb0dc0b",
+                            "global_sequence": 246507,
+                            "recv_sequence": 246488,
+                            "auth_sequence": [
+                                [
+                                    "eosio",
+                                    246500
+                                ]
+                            ],
+                            "code_sequence": 1,
+                            "abi_sequence": 1
+                        },
+                        "act": {
+                            "account": "eosio.token",
+                            "name": "transfer",
+                            "authorization": [
+                                {
+                                    "actor": "eosio",
+                                    "permission": "active"
+                                }
+                            ],
+                            "data": {
+                                "from": "eosio",
+                                "to": "noprom",
+                                "quantity": "1.0000 EOS",
+                                "memo": "created by noprom"
+                            },
+                            "hex_data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
+                        },
+                        "elapsed": 3,
+                        "cpu_usage": 0,
+                        "console": "",
+                        "total_cpu_usage": 0,
+                        "trx_id": "015ba92c7ad7294f0d70c772e7ba6ed678b11734418bf9ec48b001ce65c48e2f",
+                        "inline_traces": []
+                    },
+                    {
+                        "receipt": {
+                            "receiver": "noprom",
+                            "act_digest": "77d11fbbb7e6a5d67c28c2578bc2042704ed76d494d7e426eaecb54dceb0dc0b",
+                            "global_sequence": 246508,
+                            "recv_sequence": 7,
+                            "auth_sequence": [
+                                [
+                                    "eosio",
+                                    246501
+                                ]
+                            ],
+                            "code_sequence": 1,
+                            "abi_sequence": 1
+                        },
+                        "act": {
+                            "account": "eosio.token",
+                            "name": "transfer",
+                            "authorization": [
+                                {
+                                    "actor": "eosio",
+                                    "permission": "active"
+                                }
+                            ],
+                            "data": {
+                                "from": "eosio",
+                                "to": "noprom",
+                                "quantity": "1.0000 EOS",
+                                "memo": "created by noprom"
+                            },
+                            "hex_data": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
+                        },
+                        "elapsed": 4,
+                        "cpu_usage": 0,
+                        "console": "",
+                        "total_cpu_usage": 0,
+                        "trx_id": "015ba92c7ad7294f0d70c772e7ba6ed678b11734418bf9ec48b001ce65c48e2f",
+                        "inline_traces": []
+                    }
+                ]
+            }
+        ],
+        "except": null
+    }
+}
+```
+
+这样就完成了用RPC API来转账的功能。
