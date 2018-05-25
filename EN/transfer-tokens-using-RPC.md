@@ -1,29 +1,29 @@
-# 使用EOS的RPC接口来转账
+# Using EOS RPC API to Transfer EOS
 
-本教程主要使用EOS的RPC接口来对发行的代币使用RPC接口来进行操作，下列实验均基于`eosio/eos:20180521`这个版本的EOS完成。
+This tutorial mainly uses the RPC API of EOS to use the RPC interface to operate the issued tokens. The following experiments are based on the EOS of `eosio/eos:20180521`.
 
-## 发布代币合约
+## Deploy Token Contract
 
-#### 创建账号
+#### Create an account
 
 ```
 cleos create account eosio eosio.token EOS5ySgzeHp9G7TqNDGpyzaCtahAeRcTvPRPJbFey5CmySL3vKYgE EOS5ySgzeHp9G7TqNDGpyzaCtahAeRcTvPRPJbFey5CmySL3vKYgE
 ```
 
-操作结果:
+Operation result:
 
 ```
 executed transaction: 4a8b53ae6fa5e22ded33b50079e45550e39f3cb72ffa628e771ea21758844039  200 bytes  339 us
 #         eosio <= eosio::newaccount            {"creator":"eosio","name":"eosio.token","owner":{"threshold":1,"keys":[{"key":"EOS5ySgzeHp9G7TqNDGpy...
 ```
 
-#### 部署合约
+#### Deployment Contract
 
 ```
 cleos set contract eosio.token /opt/eosio/bin/data-dir/contracts/eosio.token -p eosio.token
 ```
 
-结果:
+result:
 
 ```
 Reading WAST/WASM from /opt/eosio/bin/data-dir/contracts/eosio.token/eosio.token.wasm...
@@ -34,55 +34,55 @@ executed transaction: 41677b5fd5c701ca67a153abb09f79c04085cc51a9d021436e7ee5afda
 #         eosio <= eosio::setabi                {"account":"eosio.token","abi":"0e656f73696f3a3a6162692f312e30010c6163636f756e745f6e616d65046e616d65...
 ```
 
-#### 创建EOS代币
+#### Creating EOS tokens
 
 ```
 cleos push action eosio.token create '["eosio", "10000000000.0000 EOS",0,0,0]' -p eosio.token
 ```
 
-结果:
+result:
 
 ```
 executed transaction: 566693cba0b0d5d11d85e40cdfb095d525612c5915e17ce75d309054e1912235  120 bytes  552 us
 #   eosio.token <= eosio.token::create          {"issuer":"eosio","maximum_supply":"10000000000.0000 EOS"}
 ```
 
-给eosio发币
+Send coins to eosio
 
 ```
 cleos push action eosio.token issue '["eosio","1000000000.0000 EOS", "issue"]' -p eosio
 ```
 
-结果:
+result:
 
 ```
 executed transaction: 73f72879d220c720fcefb16b6aaf3db0ba492bd62020853b2cd5051557d5fa87  128 bytes  677 us
 #   eosio.token <= eosio.token::issue           {"to":"eosio","quantity":"1000000000.0000 EOS","memo":"issue"}
 ```
 
-#### 查看余额
+#### Check balance
 
-上面操作无误的话应该可以查询到余额:
+If the above operation were correct, you should be able to query the balance:
 
 ```
 cleos get currency balance eosio.token eosio
 ```
 
-结果为:
+result:
 
 ```
 1000000000.0000 EOS
 ```
 
-## 部署系统合约
+## Deploying System Contracts
 
-部署`eosio.system`合约
+Deploy the `eosio.system` contract
 
 ```
 cleos set contract eosio.token /opt/eosio/bin/data-dir/contracts/eosio.system -p eosio.token
 ```
 
-执行结果:
+result:
 
 ```
 Reading WAST/WASM from /opt/eosio/bin/data-dir/contracts/eosio.system/eosio.system.wasm...
@@ -93,15 +93,15 @@ executed transaction: f6fab6802bf8089b3ba48705f899e36fd681e58c622661ba2032eb1a85
 #         eosio <= eosio::setabi                "00a6823403ea3055a8250e656f73696f3a3a6162692f312e30050c6163636f756e745f6e616d65046e616d650f7065726d6...
 ```
 
-## TODO: 新建账号
+## TODO: New Account
 
-这里我们使用系统合约*eosio.system*的*newaccount*这个action来进行新建账号。
+Here we use the *newaccount* action of the system contract *eosio.system* to create a new account.
 
-## 转账RPC
+## RPC usage of transfer
 
 ### abi_json_to_bin
 
-首先我们需要序列化转账的json:
+First we need to serialize the json of the transfer:
 
 ```
 POST http://127.0.0.1:8888/v1/chain/abi_json_to_bin
@@ -122,42 +122,41 @@ Data:
 }
 ```
 
-参数的意思分别为:
+The meaning of the parameters are:
 
-|   参数名称   |  参数类型  |                    描述                    |
-| :------: | :----: | :--------------------------------------: |
-|   code   | string |       智能合约的名字，这里用的是**eosio.token**       |
-|  action  | string |    智能合约中的action, 这里用转账: **transfer**     |
-|   from   | string |       **transfer**方法里面的参数，从哪个账户转账        |
-|    to    | string |       **transfer**方法里面的参数，转账到哪个账户        |
-| quantity | string | **transfer**方法里面的参数，转账数量，这里代币名称为EOS，还可以有其他代币 |
-|   memo   | string |         **transfer**方法里面的参数，转账备注         |
+| Parameter Name | Parameter Type |               Description                |
+| :------------: | :------------: | :--------------------------------------: |
+|      code      |     string     | The name of the smart contract, used here is **eosio.token** |
+|     action     |     string     | action in a smart contract, with a transfer here: **transfer** |
+|      from      |     string     | **transfer** method parameters, from which account transfer |
+|       to       |     string     | **transfer** method parameters, transfer to which account |
+|    quantity    |     string     | **transfer** method parameters, number of transfers, token name here is EOS, there may be other tokens |
+|      memo      |     string     | **transfer** method parameters, transfer notes |
 
-这样会得到一个二进制的字符串，会用作后面的步骤中的`data`参数：
+This will get a binary string that will be used as the `data` parameter in the following steps:
 
 ```
 {
     "binargs": "0000000000ea305500000000487a2b9d102700000000000004454f53000000001163726561746564206279206e6f70726f6d"
 }
 ```
-
-|  参数名称   |  参数类型  |                    描述                    |
-| :-----: | :----: | :--------------------------------------: |
-| binargs | string | 序列化的结果，在sign_transaction 和 push_transaction 中作为 **data** 请求参数 |
+| Parameter Name | Parameter Type | Description                              |
+| :------------: | :------------: | ---------------------------------------- |
+|    binargs     |     string     | Serialized results as **data** request parameters in sign_transaction and push_transaction |
 
 ### get_info
 
-我们使用get_info来获取最新的区块号:
+We use **get_info** to get the latest block number:
 
 ```
 GET http://127.0.0.1:8888/v1/chain/get_info
 ```
 
-|      参数名称      |  参数类型  |  描述   |
-| :------------: | :----: | :---: |
-| head_block_num | number | 最新区块号 |
+| Parameter Name | Parameter Type |     Description     |
+| :------------: | :------------: | :-----------------: |
+| head_block_num |     number     | latest block number |
 
-得到结果:
+Got the result:
 
 ```
 {
@@ -177,7 +176,7 @@ GET http://127.0.0.1:8888/v1/chain/get_info
 
 ### get_block
 
-使用 **get_block**来获取最新的区块具体信息:
+Use **get_block** to get the latest block specific information:
 
 ```
 POST http://127.0.0.1:8888/v1/chain/get_block
@@ -189,13 +188,13 @@ DATA:
 {"block_num_or_id":246190}
 ```
 
-请求参数:
+Request parameters:
 
-|      参数名称       |  参数类型  |  描述  |
-| :-------------: | :----: | :--: |
-| block_num_or_id | number | 区块号  |
+| Parameter Name  | Parameter Type | Description  |
+| :-------------: | :------------: | :----------: |
+| Block_num_or_id |     number     | block number |
 
-得到结果:
+Got the result:
 
 ```
 {
@@ -217,17 +216,17 @@ DATA:
 }
 ```
 
-参数含义:
+The meaning of the parameters:
 
-|       参数名称       |  参数类型  |                    描述                    |
-| :--------------: | :----: | :--------------------------------------: |
-|    timestamp     | string |                 区块对应的时间戳                 |
-|    block_num     | number | 区块号，作为sign_transaction 和 push_transaction中的 **ref_block_num**请求参数 |
-| ref_block_prefix | number | 作为sign_transaction 和 push_transaction中的**ref_block_prefix** 请求参数 |
+|  Parameter Name  | Parameter Type | Description                              |
+| :--------------: | :------------: | ---------------------------------------- |
+|    Timestamp     |     string     | Timestamp of the block                   |
+|    Block_num     |     number     | block number as the **ref_block_num** request parameter in sign_transaction and push_transaction |
+| ref_block_prefix |     number     | as **ref_block_prefix** request parameters in sign_transaction and push_transaction |
 
 ### unlock
 
-在签名交易之前需要解锁钱包:
+To unlock the wallet before signing the transaction:
 
 ```
 POST http://127.0.0.1:8888/v1/wallet/unlock
@@ -239,7 +238,7 @@ Data:
 ["noprom", "PW5KExxxxxS1HQzF1qJtWbxxxEFqSxdWBpgYUsxxxxxoxVRmjVw7Y"]
 ```
 
-得到结果, 如果为空就返回下面的结果：
+Get the result, if it is empty return the following result:
 
 ```
 {}
@@ -247,7 +246,7 @@ Data:
 
 ### get_required_keys
 
-我们需要用这个接口来获取所需要的key
+We need to use this interface to get the required key
 
 ```
 POST http://127.0.0.1:8888/v1/chain/get_required_keys
@@ -292,7 +291,7 @@ DATA:
 }
 ```
 
-得到结果:
+Got the result:
 
 ```
 {
@@ -302,11 +301,11 @@ DATA:
 }
 ```
 
-结果中的key将作为**sign_transaction**的key
+The key in the result will be the key to **sign_transaction**
 
 ### sign_transaction
 
-接着我们需要对转账交易进行签名：
+Then we need to sign the transfer transaction:
 
 ```
 POST http://127.0.0.1:8888/v1/wallet/sign_transaction
@@ -342,21 +341,21 @@ Data:
 ]
 ```
 
-参数含义:
+The meaning of the parameters:
 
-|            参数名称            |  参数类型  |                 描述                  |
-| :------------------------: | :----: | :---------------------------------: |
-|       ref_block_num        | number |        **get_block**获得的最新区块号        |
-|      ref_block_prefix      | number |      **get_block**获得的最新区块号相关信息      |
-|         expiration         | string |   过期时间 = timestamp 加上 一段时间 ，例如1分钟   |
-|          account           | string |   调用系统智能合约账号名，这里为**eosio.token**    |
-|            name            | string |  **eosio.token**合约的**transfer**方法   |
-|    authorization. actor    | string |              执行操作的用户名               |
-| authorization.  permission | string |               执行操作的权限               |
-|            data            | string | **abi_json_to_bin** 序列化后的 值 binargs |
-|                            | string |               创建者的公钥                |
+|      Parameter Name       | Parameter Type | Description                              |
+| :-----------------------: | :------------: | ---------------------------------------- |
+|       ref_block_num       |     number     | Latest block number obtained by **get_block** |
+|     ref_block_prefix      |     number     | **get_block** Get the latest block number information |
+|        expiration         |     string     | expiration time = timestamp plus time, eg 1 minute |
+|          Account          |     string     | Call system smart contract account name, here is **eosio.token** |
+|           name            |     string     | **transfer** method of **eosio.token** contract |
+|   Authorization. actor    |     string     | user name to perform the operation       |
+| authorization. permission |     string     | permission to perform operations         |
+|           data            |     string     | **abi_json_to_bin** Serialized Values ​​binargs |
+|                           |     string     | creator's public key                     |
 
-得到结果:
+Got the result:
 
 ```
 {
@@ -390,7 +389,7 @@ Data:
 
 ### push_transaction
 
-最后就是发送交易:
+The last is to send the transaction:
 
 ```
 POST http://127.0.0.1:8888/v1/chain/push_transaction
@@ -427,20 +426,20 @@ Data:
 }
 ```
 
-参数含义:
+The meaning of the parameters:
 
-|            参数名称            |  参数类型  |                描述                |
-| :------------------------: | :----: | :------------------------------: |
-|       ref_block_num        | number |      **get_block**获得的最新区块号       |
-|      ref_block_prefix      | number |    **get_block**获得的最新区块号相关信息     |
-|         expiration         | string | 过期时间 = timestamp 加上 一段时间 ，例如1分钟  |
-|          account           | string |  调用系统智能合约账号名，这里为**eosio.token**  |
-|            name            | string | **eosio.token**合约的**transfer**方法 |
-|    authorization. actor    | string |             执行操作的用户名             |
-| authorization.  permission | string |             执行操作的权限              |
-|         signatures         | string |    **sign_transaction** 得到的签名    |
+|      Parameter Name       | Parameter Type | Description                              |
+| :-----------------------: | :------------: | ---------------------------------------- |
+|       ref_block_num       |     number     | Latest block number obtained by **get_block** |
+|     ref_block_prefix      |     number     | **get_block** Get the latest block number information |
+|        expiration         |     string     | expiration time = timestamp plus time, eg 1 minute |
+|          account          |     string     | Call system smart contract account name, here is **eosio.token** |
+|           name            |     string     | **transfer** method of **eosio.token** contract |
+|   authorization. actor    |     string     | user name to perform the operation       |
+| authorization. permission |     string     | permission to perform operations         |
+|        signatures         |     string     | **sign_transaction** Signed              |
 
-得到结果
+Got the result:
 
 ```
 {
@@ -580,4 +579,4 @@ Data:
 }
 ```
 
-这样就完成了用RPC API来转账的功能。
+This completes the function of transferring funds using the RPC API.
